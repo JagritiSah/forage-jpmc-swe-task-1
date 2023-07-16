@@ -36,13 +36,33 @@ def getDataPoint(quote):
     bid_price = float(quote['top_bid']['price'])
     ask_price = float(quote['top_ask']['price'])
     price = bid_price
+    price = (bid_price + ask_price)/2
     return stock, bid_price, ask_price, price
+
+# unit test
+def test getDataPoint_calculatePrice(self):
+    quotes =[
+        {'top task': {'price': 121.2, 'size':36}, 'timestamp': '2019=02-11 22:06:30.572453', 'top_bid': { 'price': 120.48,  'size': 109}, 'id': '0.109974697771', 'stock':'ABC'},
+        {'top task': {'price': 121.68, 'size':4}, 'timestamp': '2019=02-11 22:06:30.572453', 'top_bid': { 'price': 117.87,  'size': 81}, 'id': '0.109974697771', 'stock':'DEF'}
+    ]
+    for quote in quotes:
+        self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'],(quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+
+# unit test
+def test getDataPoint_calculatePriceBidGreaterThanAsk(self):
+    quotes =[
+        {'top task': {'price': 119.2, 'size':36}, 'timestamp': '2019=02-11 22:06:30.572453', 'top_bid': { 'price': 120.48,  'size': 109}, 'id': '0.109974697771', 'stock':'ABC'},
+        {'top task': {'price': 121.68, 'size':4}, 'timestamp': '2019=02-11 22:06:30.572453', 'top_bid': { 'price': 117.87,  'size': 81}, 'id': '0.109974697771', 'stock':'DEF'}
+    ]
+ for quote in quotes:
+        self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'],(quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+
 
 
 def getRatio(price_a, price_b):
     """ Get ratio of price_a and price_b """
     """ ------------- Update this function ------------- """
-    return 1
+    return price_a/price_b
 
 
 # Main
@@ -56,4 +76,4 @@ if __name__ == "__main__":
             stock, bid_price, ask_price, price = getDataPoint(quote)
             print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
 
-        print("Ratio %s" % getRatio(price, price))
+        print("Ratio %s" % getRatio(price["ABC"], price["DEF"]))
